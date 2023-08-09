@@ -15,11 +15,29 @@ async def write_genre(file_name):
     name of the given file
     """
 
-    
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://binaryjazz.us/wp-json/genrenator/v1/genre") as response:
+            genre = await response.json()
+
+    async with aiofiles.open(file_name, "w") as new_file:
+        print(f"{time.ctime()} - writing 'genre' to 'file_name'...")
+        await new_file.write(genre)
 
 
 async def main():
-    
+    tasks = []
+
+    print(f"{time.ctime()} - starting...")
+    start = time.time()
+
+    for i in range(5):
+        tasks.append(write_genre(f"./asyncout/new_file{i}.text"))
+
+    await asyncio.gather(*tasks)
+
+    end = time.time()
+    print(
+        f"Time to complete asyncio read/writes: {round(end-start,2)} seconds")
 
 if __name__ == "__main__":
     # On Windows, this finishes successfully, but throws 'RuntimeError: Event loop is closed'

@@ -20,11 +20,22 @@
 import asyncio
 import time
 
+
 async def cook(food, t):
-    
+    print(f"{time.ctime()} - Microwave ({food}): Cooking {t} seconds...")
+    await asyncio.sleep(t)
+    print(f"{time.ctime()} - Microwave ({food}): Finished cooking")
+    return f'{food} is completed'
+
 
 async def main():
-    
+    coros = [
+        cook('Rice', 5),
+        cook('Noodle', 3),
+        cook('Curry', 1)
+    ]
+    result = await asyncio.gather(*coros)
+    print(f"{time.ctime()} - {result}")
 
 if __name__ == '__main__':
     t1 = time.time()
